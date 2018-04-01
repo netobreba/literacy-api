@@ -61,7 +61,7 @@ Please read [CONTRIBUTING.md](https://github.com/NetoBreba/literacy_api/blob/mas
 
 ## Authors
 
-See our of [contributors](https://github.com/NetoBreba/literacy_api/graphs/contributors) who participated in this project.
+See the [contributors](https://github.com/NetoBreba/literacy_api/graphs/contributors) who participated in this project.
 
 ## License
 
