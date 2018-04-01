@@ -34,6 +34,12 @@ Windows:
 npm
 ```
 
+### Running
+
+```
+npm
+```
+
 ### Usage example
 
 
@@ -46,6 +52,7 @@ npm
 * [Nodejs](https://nodejs.org/en/) - Client-side framework used
 * [npm](https://www.npmjs.com/) - Dependency Management
 * [MongoDB](https://www.mongodb.com/) - NoSQL database used
+* [Expressjs](https://expressjs.com/) - Nodejs web application framework
 
 ## Contributing
 
