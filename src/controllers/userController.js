@@ -1,32 +1,55 @@
 import express from 'express'
 import HttpStatus from 'http-status-codes'
 import {User} from '../models/user'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import * as middleware from '../middlewares/auth'
+import * as exceptions from '../exceptions/userExceptions'
 const fs = require('fs')
 const fileType = require('file-type')
 
 const router = express.Router()
 
+export const login = (req, res) => {
+    User.findOne({where: {username: req.body.username}}).then((user) => {
+        if(user){
+            console.log(user.get({plain:true}))
+            bcrypt.compare(req.body.password, user.get({plain:true}).password).then((result) => {
+                if(result){
+                    const token = jwt.sign(user.get({plain:true}), middleware.SECRET_ENCODING_MESSAGE)
+                    res.status(HttpStatus.OK).json({token: token}).send()                    
+                }else{
+                    res.status(HttpStatus.UNAUTHORIZED).json(exceptions.responseUsernameOrPasswordIncorret()).send()                    
+                }
+            })
+        }else{
+            res.status(HttpStatus.UNAUTHORIZED).json(exceptions.responseUsernameOrPasswordIncorret()).send()
+        }
+    })
+}
+
 export const addUser = (req, res) => {
-    const username = req.body.username
-    const password = req.body.password
-    const email = req.body.email
-    const firstName = req.body.firstName
-    const lastName = req.body.lastName
-    const data = {username: username, 
-                    password: password,
+    bcrypt.hash(req.body.password, 12).then((result) => {
+        const username = req.body.username
+        const email = req.body.email
+        const firstName = req.body.firstName
+        const lastName = req.body.lastName
+        const data = {username: username, 
+                    password: result,
                     email: email,
                     firstName: firstName,
                     lastName: lastName}
-    User.create(data).then((user) => {
-        // falta colocar o try catch na chamada da função 'savePictureUser'
-        const image = savePictureUser(req.body.image, user.username)
-        user.update({image: image}).then(() => {
-            res.status(HttpStatus.CREATED).json(user).send()
+        User.create(data).then((user) => {
+            // falta colocar o try catch na chamada da função 'savePictureUser'
+            const photo = savePictureUser(req.body.photo, user.username)
+            user.update({photo: photo}).then(() => {
+                res.status(HttpStatus.CREATED).json(user).send()
+            })
+        }).catch((error) => {
+            res.status(HttpStatus.BAD_REQUEST)
+                .json(exceptions.responseErroCatch(HttpStatus.BAD_REQUEST))
+                .send()
         })
-    }).catch((error) => {
-        res.status(HttpStatus.BAD_REQUEST)
-            .json(responseErroCatch(HttpStatus.BAD_REQUEST))
-            .send()
     })
 }
 
@@ -34,23 +57,6 @@ export const getUsers = (req, res) => {
     User.findAll().then((users) => {
         res.status(HttpStatus.OK).json(users).send()
     })
-}
-
-/* 
-    função reponsável por retornar um objeto que contem
-    o erro da operação
-*/
-function responseErroCatch(code){
-    let erro = {error: HttpStatus.getStatusText(code)}
-    return erro
-}
-
-/* 
-    funcão responsável por retornar um objeto com a menssagem
-    de usuário não encontrado
-*/
-function responseNotFoundUser(){
-    return {error: MSG_USER_NOT_FOUND}
 }
 
 /*
@@ -67,4 +73,3 @@ function savePictureUser(codeBase64, pictureName){
 
 const BASE_URL_USER_PICTURE = '/static/images/'
 const BASE_URL_SAVE = 'public/images/'
-const USER_NOT_FOUND = "usuário não existe"

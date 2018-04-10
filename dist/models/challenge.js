@@ -20,5 +20,3 @@ var Challenge = exports.Challenge = _database.sequelize.define('challenge', {
     sound: { type: _sequelize2.default.STRING(128) },
     video: { type: _sequelize2.default.STRING(128) }
 });
-
-//Challenge.sync()

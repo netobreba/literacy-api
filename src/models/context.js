@@ -11,5 +11,3 @@ export const Context = sequelize.define('context', {
     sound: { type: Sequelize.STRING(128), allowNull: false},
     video: { type: Sequelize.STRING(128), allowNull: false}
 })
-
-//Context.sync()

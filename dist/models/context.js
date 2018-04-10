@@ -23,5 +23,3 @@ var Context = exports.Context = _database.sequelize.define('context', {
     sound: { type: _sequelize2.default.STRING(128), allowNull: false },
     video: { type: _sequelize2.default.STRING(128), allowNull: false }
 });
-
-//Context.sync()

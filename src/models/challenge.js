@@ -8,5 +8,3 @@ export const Challenge = sequelize.define('challenge', {
     sound: { type: Sequelize.STRING(128)},
     video: { type: Sequelize.STRING(128)}
 })
-
-//Challenge.sync()
