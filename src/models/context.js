@@ -5,7 +5,8 @@ export const Context = sequelize.define('context', {
     id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true}, 
     name: {
         type: Sequelize.STRING(128),
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     image: { type: Sequelize.STRING(128), allowNull: false},
     sound: { type: Sequelize.STRING(128), allowNull: false},
