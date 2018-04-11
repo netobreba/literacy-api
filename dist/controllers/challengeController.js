@@ -23,10 +23,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var fs = require('fs');
 var fileType = require('file-type');
+var crypto = require('crypto');
 
 var addChallenge = exports.addChallenge = function addChallenge(req, res) {
+    var image = saveImageChallenge(req.body.image);
     var word = req.body.word;
-    var image = req.body.image;
     var sound = req.body.sound;
     var video = req.body.video;
     var context = req.body.context;
@@ -42,8 +43,8 @@ var addChallenge = exports.addChallenge = function addChallenge(req, res) {
 };
 
 var updateChallege = exports.updateChallege = function updateChallege(req, res) {
+    var image = saveImageChallenge(req.body.image);
     var word = req.body.word;
-    var image = req.body.image;
     var sound = req.body.sound;
     var video = req.body.video;
     var context = req.body.context;
@@ -110,3 +111,27 @@ var RULE_PRESENT_CHALLENGE = {
     attributes: { exclude: ['authorId', 'contextId'] } };
 var CHALLENGE_NOT_FOUND = "challenge não existe";
 var ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt'];
+
+function saveImageChallenge(codeBase64) {
+    if (!codeBase64) return null;
+    var buffer = new Buffer(codeBase64, 'base64');
+    var imageExtension = fileType(buffer).ext;
+    var imageName = generateChallengeName();
+    imageName = imageName + '.' + imageExtension;
+    fs.writeFileSync(BASE_URL_CONTEXT + imageName, buffer);
+    return BASE_URL_CONTEXT_IMAGE + imageName;
+}
+
+function generateChallengeName() {
+    while (true) {
+        var currentDate = new Date().valueOf().toString();
+        var random = Math.random().toString();
+        var contextName = crypto.createHash('md5').update(currentDate + random).digest('hex');
+        if (!fs.existsSync(BASE_URL_CONTEXT + contextName)) {
+            return contextName;
+        }
+    }
+}
+
+var BASE_URL_CONTEXT_IMAGE = '/static/images/';
+var BASE_URL_CONTEXT = 'public/images/';

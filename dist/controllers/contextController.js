@@ -21,10 +21,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var fs = require('fs');
 var fileType = require('file-type');
+var crypto = require('crypto');
 
 var addContext = exports.addContext = function addContext(req, res) {
+    var image = saveImageContext(req.body.image);
     var name = req.body.name;
-    var image = req.body.image;
     var sound = req.body.sound;
     var video = req.body.video;
     var author = req.body.author;
@@ -33,10 +34,10 @@ var addContext = exports.addContext = function addContext(req, res) {
         video: video,
         image: image,
         authorId: author };
-
     _context.Context.create(data).then(function (context) {
         res.status(_httpStatusCodes2.default.CREATED).json(context).send();
     }).catch(function (error) {
+        console.log(error);
         res.status(_httpStatusCodes2.default.BAD_REQUEST).json(responseErroCatch(_httpStatusCodes2.default.BAD_REQUEST)).send();
     });
 };
@@ -45,8 +46,8 @@ var updateContext = exports.updateContext = function updateContext(req, res) {
     var id = req.params.id;
     _context.Context.findById(id).then(function (context) {
         if (context) {
+            var image = saveImageContext(req.body.image);
             var name = req.body.name;
-            var image = req.body.image;
             var sound = req.body.sound;
             var video = req.body.video;
             var data = { name: name,
@@ -105,5 +106,29 @@ function responseNotFoundContext() {
     return { error: CONTEXT_NOT_FOUND };
 }
 
-var CONTEXT_NOT_FOUND = "contexto não existe";
+var CONTEXT_NOT_FOUND = "contexto not found";
 var ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt'];
+
+function saveImageContext(codeBase64) {
+    if (!codeBase64) return null;
+    var buffer = new Buffer(codeBase64, 'base64');
+    var imageExtension = fileType(buffer).ext;
+    var imageName = generateContextName();
+    imageName = imageName + '.' + imageExtension;
+    fs.writeFileSync(BASE_URL_CONTEXT + imageName, buffer);
+    return BASE_URL_CONTEXT_IMAGE + imageName;
+}
+
+function generateContextName() {
+    while (true) {
+        var currentDate = new Date().valueOf().toString();
+        var random = Math.random().toString();
+        var contextName = crypto.createHash('md5').update(currentDate + random).digest('hex');
+        if (!fs.existsSync(BASE_URL_CONTEXT + contextName)) {
+            return contextName;
+        }
+    }
+}
+
+var BASE_URL_CONTEXT_IMAGE = '/static/images/';
+var BASE_URL_CONTEXT = 'public/images/';

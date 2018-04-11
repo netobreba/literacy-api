@@ -21,6 +21,6 @@ var Context = exports.Context = _database.sequelize.define('context', {
         unique: true
     },
     image: { type: _sequelize2.default.STRING(128), allowNull: false },
-    sound: { type: _sequelize2.default.STRING(128), allowNull: false },
-    video: { type: _sequelize2.default.STRING(128), allowNull: false }
+    sound: { type: _sequelize2.default.STRING(128) },
+    video: { type: _sequelize2.default.STRING(128) }
 });

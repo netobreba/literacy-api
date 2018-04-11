@@ -9,6 +9,6 @@ export const Context = sequelize.define('context', {
         unique: true
     },
     image: { type: Sequelize.STRING(128), allowNull: false},
-    sound: { type: Sequelize.STRING(128), allowNull: false},
-    video: { type: Sequelize.STRING(128), allowNull: false}
+    sound: { type: Sequelize.STRING(128)},
+    video: { type: Sequelize.STRING(128)}
 })

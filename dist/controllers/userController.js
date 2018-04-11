@@ -70,11 +70,14 @@ var addUser = exports.addUser = function addUser(req, res) {
             firstName: firstName,
             lastName: lastName };
         _user.User.create(data).then(function (user) {
-            // falta colocar o try catch na chamada da função 'savePictureUser'
-            var photo = savePictureUser(req.body.photo, user.username);
-            user.update({ photo: photo }).then(function () {
+            if (req.body.photo) {
+                var photo = savePhotoUser(req.body.photo, user.username);
+                user.update({ photo: photo }).then(function () {
+                    res.status(_httpStatusCodes2.default.CREATED).json(user).send();
+                });
+            } else {
                 res.status(_httpStatusCodes2.default.CREATED).json(user).send();
-            });
+            }
         }).catch(function (error) {
             res.status(_httpStatusCodes2.default.BAD_REQUEST).json(exceptions.responseErroCatch(_httpStatusCodes2.default.BAD_REQUEST)).send();
         });
@@ -91,7 +94,7 @@ var getUsers = exports.getUsers = function getUsers(req, res) {
     função responsável por salvar a foto de perfil de um usuário
     em um diretório no sistema operacional
 */
-function savePictureUser(codeBase64, pictureName) {
+function savePhotoUser(codeBase64, pictureName) {
     var buffer = new Buffer(codeBase64, 'base64');
     var pictureExtension = fileType(buffer).ext;
     pictureName = pictureName + '.' + pictureExtension;

@@ -40,11 +40,14 @@ export const addUser = (req, res) => {
                     firstName: firstName,
                     lastName: lastName}
         User.create(data).then((user) => {
-            // falta colocar o try catch na chamada da função 'savePictureUser'
-            const photo = savePictureUser(req.body.photo, user.username)
-            user.update({photo: photo}).then(() => {
+            if(req.body.photo){
+                const photo = savePhotoUser(req.body.photo, user.username)
+                user.update({photo: photo}).then(() => {
+                    res.status(HttpStatus.CREATED).json(user).send()
+                })
+            }else{
                 res.status(HttpStatus.CREATED).json(user).send()
-            })
+            }
         }).catch((error) => {
             res.status(HttpStatus.BAD_REQUEST)
                 .json(exceptions.responseErroCatch(HttpStatus.BAD_REQUEST))
@@ -63,7 +66,7 @@ export const getUsers = (req, res) => {
     função responsável por salvar a foto de perfil de um usuário
     em um diretório no sistema operacional
 */
-function savePictureUser(codeBase64, pictureName){
+function savePhotoUser(codeBase64, pictureName){
     let buffer = new Buffer(codeBase64, 'base64')
     let pictureExtension = fileType(buffer).ext
     pictureName = pictureName + '.' + pictureExtension
