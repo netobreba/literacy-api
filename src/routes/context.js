@@ -1,31 +1,17 @@
 import express from 'express'
-import HttpStatus from 'http-status-codes'
-import {Context} from '../models/context'
+import * as controller from '../controllers/contextController'
+import * as middleware from '../middlewares/auth'
 
 let router = express.Router()
+router.use(middleware.auth)
 
 router.route('/')
-    .get((req, res) => {
-        Context.findAll().then((contexts) => {
-            res.json(contexts).status(HttpStatus.OK).send()
-        }).catch((error) => {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).send()
-        })
-    })
+    .post(controller.addContext)
+    .get(controller.getContexts)
 
-    .post((req, res) => {
-        const name = req.body.name
-        const author = req.body.author
-        const data = {name: name, author: author}
-        
-        Context.create(data).then((context) => {
-            res.status(HttpStatus.CREATED).json(context).send()
-        }).catch((error) => {
-            res.status(HttpStatus.BAD_REQUEST)
-                .json({error: HttpStatus.getStatusText(HttpStatus.BAD_REQUEST)})
-                .send()
-        })
-        
-    })
-
+router.route('/:id/')
+    .put(controller.updateContext)
+    .get(controller.getContext)
+    .delete(controller.deleteContext)
+    
 export default router

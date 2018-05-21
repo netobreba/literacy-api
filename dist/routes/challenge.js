@@ -8,9 +8,9 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
-var _contextController = require('../controllers/contextController');
+var _challengeController = require('../controllers/challengeController');
 
-var controller = _interopRequireWildcard(_contextController);
+var controller = _interopRequireWildcard(_challengeController);
 
 var _auth = require('../middlewares/auth');
 
@@ -23,8 +23,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var router = _express2.default.Router();
 router.use(middleware.auth);
 
-router.route('/').post(controller.addContext).get(controller.getContexts);
+router.route('/').post(controller.addChallenge).get(controller.getChallenges);
 
-router.route('/:id/').put(controller.updateContext).get(controller.getContext).delete(controller.deleteContext);
+router.route('/:id/').put(controller.updateChallege).get(controller.getChallenge).delete(controller.deleteChallenge);
 
 exports.default = router;
