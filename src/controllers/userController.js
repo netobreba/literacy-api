@@ -57,7 +57,7 @@ export const addUser = (req, res) => {
 }
 
 export const getUsers = (req, res) => {
-    User.findAll().then((users) => {
+    User.findAll({attributes: {exclude: ["password"]}}).then((users) => {
         res.status(HttpStatus.OK).json(users).send()
     })
 }

@@ -32,5 +32,5 @@ _challenge.Challenge.belongsTo(User, { foreignKey: { allowNull: false, name: 'au
 _challenge.Challenge.belongsTo(_context.Context, { foreignKey: { allowNull: false, name: 'contextId' } });
 
 User.sync();
-_context.Context.sync();
 _challenge.Challenge.sync();
+_context.Context.sync();

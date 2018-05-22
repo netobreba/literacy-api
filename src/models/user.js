@@ -18,5 +18,5 @@ Challenge.belongsTo(User, {foreignKey: {allowNull: false, name: 'authorId'}})
 Challenge.belongsTo(Context, {foreignKey: {allowNull: false, name: 'contextId'}})
 
 User.sync()
-Context.sync()
 Challenge.sync()
+Context.sync()

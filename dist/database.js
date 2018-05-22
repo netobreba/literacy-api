@@ -11,8 +11,15 @@ var _sequelize2 = _interopRequireDefault(_sequelize);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var sequelize = exports.sequelize = new _sequelize2.default('literacy_db', null, null, {
+// export let sequelize = new Sequelize('literacy_db', null, null, {
+//     host: 'localhost',
+//     dialect: 'sqlite',
+//     storage: './data.sqlite'
+// })
+
+var sequelize = exports.sequelize = new _sequelize2.default('literacy', process.env.DB_USER || 'postgres', process.env.DB_PASSWORD || 'neto1234', {
     host: 'localhost',
-    dialect: 'sqlite',
-    storage: './data.sqlite'
+    port: '5432',
+    dialect: 'postgres',
+    operatorsAliases: false
 });
