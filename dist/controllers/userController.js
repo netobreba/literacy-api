@@ -85,7 +85,7 @@ var addUser = exports.addUser = function addUser(req, res) {
 };
 
 var getUsers = exports.getUsers = function getUsers(req, res) {
-    _user.User.findAll().then(function (users) {
+    _user.User.findAll({ attributes: { exclude: ["password"] } }).then(function (users) {
         res.status(_httpStatusCodes2.default.OK).json(users).send();
     });
 };
