@@ -3,6 +3,7 @@ import HttpStatus from 'http-status-codes'
 
 export const SECRET_ENCODING_MESSAGE = 'literacy'
 const METHOD_AUTHORIZED = "GET"
+const PATH_AUTHORIZED = ""
 
 export let auth = (req, res, next) => {
     if(req.method === METHOD_AUTHORIZED){

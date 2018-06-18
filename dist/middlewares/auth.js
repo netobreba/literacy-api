@@ -17,6 +17,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var SECRET_ENCODING_MESSAGE = exports.SECRET_ENCODING_MESSAGE = 'literacy';
 var METHOD_AUTHORIZED = "GET";
+var PATH_AUTHORIZED = "";
 
 var auth = exports.auth = function auth(req, res, next) {
     if (req.method === METHOD_AUTHORIZED) {

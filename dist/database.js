@@ -17,7 +17,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //     storage: './data.sqlite'
 // })
 
-var sequelize = exports.sequelize = new _sequelize2.default('literacy', process.env.DB_USER || 'postgres', process.env.DB_PASSWORD || 'neto1234', {
+var sequelize = exports.sequelize = new _sequelize2.default('literacy', process.env.DB_USER || 'postgres', process.env.DB_PASSWORD || 'oigre$199210', {
     host: 'localhost',
     port: '5432',
     dialect: 'postgres',
