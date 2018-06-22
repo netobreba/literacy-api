@@ -111,12 +111,12 @@ function responseNotFoundChallenge() {
     return { error: CHALLENGE_NOT_FOUND };
 }
 
+var ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt'];
 var RULE_PRESENT_CHALLENGE = {
     include: [{ model: _user.User, attributes: { exclude: ATTRIBUTES_EXCLUDE_USER } }, { model: _context.Context, attributes: { exclude: ['authorId'] }, include: { model: _user.User, attributes: { exclude: ["password"] } } }],
     attributes: { exclude: ["authorId", "contextId"] }
 };
 var CHALLENGE_NOT_FOUND = "challenge não existe";
-var ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt'];
 
 function saveImageChallenge(codeBase64, req) {
     if (!codeBase64) return null;

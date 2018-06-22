@@ -98,13 +98,13 @@ function responseNotFoundChallenge(){
     return {error: CHALLENGE_NOT_FOUND}
 }
 
+const ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt']
 let RULE_PRESENT_CHALLENGE = {
     include: [{model: User, attributes: {exclude: ATTRIBUTES_EXCLUDE_USER}},
             {model: Context, attributes: {exclude: ['authorId']}, include: {model: User, attributes: {exclude: ["password"]}}}],
     attributes: {exclude: ["authorId", "contextId"]}
 }
 const CHALLENGE_NOT_FOUND = "challenge não existe"
-const ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt']
 
 function saveImageChallenge(codeBase64, req){
     if(!codeBase64) return null;
