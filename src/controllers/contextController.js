@@ -12,12 +12,12 @@ export const addContext = (req, res) => {
     const name = req.body.name
     const sound = req.body.sound
     const video = req.body.video
-    const author = req.body.author
+    // const author = req.body.author
     let data = {name: name, 
                     sound: sound, 
                     video: video,
                     image: image,
-                    authorId: author}
+                    authorId: req.user.id}
     Context.create(data).then((context) => {
         res.status(HttpStatus.CREATED).json(context).send()
     }).catch((error) => {

@@ -32,10 +32,10 @@ var addChallenge = exports.addChallenge = function addChallenge(req, res) {
     var sound = req.body.sound;
     var video = req.body.video;
     var context = req.body.context;
-    var author = req.body.author;
+    // const author = req.body.author
     var data = { word: word,
         image: image, sound: sound,
-        video: video, contextId: context, authorId: author };
+        video: video, contextId: context, authorId: req.user.id };
     _challenge.Challenge.create(data).then(function (challenge) {
         res.status(_httpStatusCodes2.default.CREATED).json(challenge).send();
     }).catch(function (error) {

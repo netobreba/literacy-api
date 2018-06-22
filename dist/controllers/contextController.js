@@ -29,12 +29,12 @@ var addContext = exports.addContext = function addContext(req, res) {
     var name = req.body.name;
     var sound = req.body.sound;
     var video = req.body.video;
-    var author = req.body.author;
+    // const author = req.body.author
     var data = { name: name,
         sound: sound,
         video: video,
         image: image,
-        authorId: author };
+        authorId: req.user.id };
     _context.Context.create(data).then(function (context) {
         res.status(_httpStatusCodes2.default.CREATED).json(context).send();
     }).catch(function (error) {

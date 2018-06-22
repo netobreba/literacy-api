@@ -14,10 +14,10 @@ export const addChallenge = (req, res) => {
     const sound = req.body.sound
     const video = req.body.video
     const context = req.body.context
-    const author = req.body.author
+    // const author = req.body.author
     const data = {word: word, 
                 image: image, sound: sound, 
-                video: video, contextId: context, authorId: author}
+                video: video, contextId: context, authorId: req.user.id}
     Challenge.create(data).then((challenge) => {
         res.status(HttpStatus.CREATED).json(challenge).send()
     }).catch((error) => {
