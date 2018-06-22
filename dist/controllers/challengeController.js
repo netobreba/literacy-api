@@ -68,7 +68,12 @@ var updateChallege = exports.updateChallege = function updateChallege(req, res) 
 };
 
 var getChallenges = exports.getChallenges = function getChallenges(req, res) {
-    _challenge.Challenge.findAll(RULE_PRESENT_CHALLENGE).then(function (challenges) {
+    // {include: {model: User, attributes: {exclude: ATTRIBUTES_EXCLUDE_USER}},
+    //     attributes: {exclude: ['authorId']}}
+    _challenge.Challenge.findAll({
+        include: [{ model: _user.User, attributes: { exclude: ATTRIBUTES_EXCLUDE_USER } }, { model: _context.Context, attributes: { exclude: ['authorId'] }, include: { model: _user.User, attributes: { exclude: ["password"] } } }],
+        attributes: { exclude: ["authorId", "contextId"] }
+    }).then(function (challenges) {
         res.status(_httpStatusCodes2.default.OK).json(challenges).send();
     });
 };
@@ -107,9 +112,9 @@ function responseNotFoundChallenge() {
 }
 
 var RULE_PRESENT_CHALLENGE = {
-    include: [{ model: _user.User, attributes: { exclude: ATTRIBUTES_EXCLUDE_USER } }, { model: _context.Context, attributes: { exclude: ['authorId'] },
-        include: { model: _user.User, attributes: { exclude: ATTRIBUTES_EXCLUDE_USER } } }],
-    attributes: { exclude: ['authorId', 'contextId'] } };
+    include: [{ model: _user.User, attributes: { exclude: ATTRIBUTES_EXCLUDE_USER } }, { model: _context.Context, attributes: { exclude: ['authorId'] }, include: { model: _user.User, attributes: { exclude: ["password"] } } }],
+    attributes: { exclude: ["authorId", "contextId"] }
+};
 var CHALLENGE_NOT_FOUND = "challenge não existe";
 var ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt'];
 

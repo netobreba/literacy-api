@@ -54,7 +54,13 @@ export const updateChallege = (req, res) => {
 }
 
 export const getChallenges = (req, res) => {
-    Challenge.findAll(RULE_PRESENT_CHALLENGE).then((challenges) => {
+    // {include: {model: User, attributes: {exclude: ATTRIBUTES_EXCLUDE_USER}},
+    //     attributes: {exclude: ['authorId']}}
+    Challenge.findAll({
+            include: [{model: User, attributes: {exclude: ATTRIBUTES_EXCLUDE_USER}},
+                    {model: Context, attributes: {exclude: ['authorId']}, include: {model: User, attributes: {exclude: ["password"]}}}],
+            attributes: {exclude: ["authorId", "contextId"]}
+        }).then((challenges) => {
         res.status(HttpStatus.OK).json(challenges).send()
     })
 }
@@ -92,11 +98,11 @@ function responseNotFoundChallenge(){
     return {error: CHALLENGE_NOT_FOUND}
 }
 
-const RULE_PRESENT_CHALLENGE = {
+let RULE_PRESENT_CHALLENGE = {
     include: [{model: User, attributes: {exclude: ATTRIBUTES_EXCLUDE_USER}},
-                {model: Context, attributes: {exclude: ['authorId']} ,
-                    include: {model: User, attributes: {exclude: ATTRIBUTES_EXCLUDE_USER}}}],
-    attributes: {exclude: ['authorId', 'contextId']}}
+            {model: Context, attributes: {exclude: ['authorId']}, include: {model: User, attributes: {exclude: ["password"]}}}],
+    attributes: {exclude: ["authorId", "contextId"]}
+}
 const CHALLENGE_NOT_FOUND = "challenge não existe"
 const ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt']
 
