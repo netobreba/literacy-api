@@ -5,9 +5,10 @@ import {User} from '../models/user'
 const fs = require('fs')
 const fileType = require('file-type')
 const crypto = require('crypto');
+import {getAbsoluteUri} from '../server.js'
 
 export const addContext = (req, res) => {
-    const image = saveImageContext(req.body.image)
+    const image = saveImageContext(req.body.image, req)
     const name = req.body.name
     const sound = req.body.sound
     const video = req.body.video
@@ -31,7 +32,7 @@ export const updateContext = (req, res) => {
     const id = req.params.id
     Context.findById(id).then((context) => {
         if(context){
-            const image = saveImageContext(req.body.image)
+            const image = saveImageContext(req.body.image, req)
             const name = req.body.name
             const sound = req.body.sound
             const video = req.body.video
@@ -100,14 +101,14 @@ function responseNotFoundContext(){
 const CONTEXT_NOT_FOUND = "contexto not found"
 const ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt']
 
-function saveImageContext(codeBase64){
+function saveImageContext(codeBase64, req){
     if(!codeBase64) return null;
     let buffer = new Buffer(codeBase64, 'base64')
     let imageExtension = fileType(buffer).ext
     let imageName = generateContextName()
     imageName = imageName + '.' + imageExtension
     fs.writeFileSync(BASE_URL_CONTEXT + imageName, buffer)
-    return BASE_URL_CONTEXT_IMAGE + imageName
+    return getAbsoluteUri(req) + BASE_URL_CONTEXT_IMAGE + imageName
 }
 
 function generateContextName(){

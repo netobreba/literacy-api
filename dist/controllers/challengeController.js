@@ -19,14 +19,15 @@ var _context = require('../models/context');
 
 var _user = require('../models/user');
 
+var _server = require('../server.js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var fs = require('fs');
 var fileType = require('file-type');
 var crypto = require('crypto');
-
 var addChallenge = exports.addChallenge = function addChallenge(req, res) {
-    var image = saveImageChallenge(req.body.image);
+    var image = saveImageChallenge(req.body.image, req);
     var word = req.body.word;
     var sound = req.body.sound;
     var video = req.body.video;
@@ -43,7 +44,7 @@ var addChallenge = exports.addChallenge = function addChallenge(req, res) {
 };
 
 var updateChallege = exports.updateChallege = function updateChallege(req, res) {
-    var image = saveImageChallenge(req.body.image);
+    var image = saveImageChallenge(req.body.image, req);
     var word = req.body.word;
     var sound = req.body.sound;
     var video = req.body.video;
@@ -112,14 +113,14 @@ var RULE_PRESENT_CHALLENGE = {
 var CHALLENGE_NOT_FOUND = "challenge não existe";
 var ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt'];
 
-function saveImageChallenge(codeBase64) {
+function saveImageChallenge(codeBase64, req) {
     if (!codeBase64) return null;
     var buffer = new Buffer(codeBase64, 'base64');
     var imageExtension = fileType(buffer).ext;
     var imageName = generateChallengeName();
     imageName = imageName + '.' + imageExtension;
     fs.writeFileSync(BASE_URL_CONTEXT + imageName, buffer);
-    return BASE_URL_CONTEXT_IMAGE + imageName;
+    return (0, _server.getAbsoluteUri)(req) + BASE_URL_CONTEXT_IMAGE + imageName;
 }
 
 function generateChallengeName() {

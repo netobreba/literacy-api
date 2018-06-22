@@ -26,4 +26,6 @@ router.route('/').post(controller.addUser).get(controller.getUsers);
 
 router.route('/login/').post(controller.login);
 
+router.route('/profile').get(controller.profile);
+
 exports.default = router;

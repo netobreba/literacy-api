@@ -7,8 +7,27 @@ import * as middleware from '../middlewares/auth'
 import * as exceptions from '../exceptions/userExceptions'
 const fs = require('fs')
 const fileType = require('file-type')
+import {SECRET_ENCODING_MESSAGE} from '../middlewares/auth'
+import {getAbsoluteUri} from '../server.js'
 
 const router = express.Router()
+
+export const profile = (req, res) => {
+    const token = req.headers['x-access-token']
+    if(token){
+        jwt.verify(token, SECRET_ENCODING_MESSAGE, (error, decoded) => {
+            if(error != null){
+                res.status(HttpStatus.UNAUTHORIZED).json({error:HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED)}).send()                
+            }
+            else{
+                delete decoded.password
+                res.status(HttpStatus.OK).json(decoded).send()
+            }
+        })
+    }else{
+        res.status(HttpStatus.UNAUTHORIZED).json({error:HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED)}).send()
+    }
+}
 
 export const login = (req, res) => {
     User.findOne({where: {username: req.body.username}}).then((user) => {
@@ -41,7 +60,7 @@ export const addUser = (req, res) => {
                     lastName: lastName}
         User.create(data).then((user) => {
             if(req.body.photo){
-                const photo = savePhotoUser(req.body.photo, user.username)
+                const photo = savePhotoUser(req.body.photo, user.username, req)
                 user.update({photo: photo}).then(() => {
                     res.status(HttpStatus.CREATED).json(user).send()
                 })
@@ -66,12 +85,12 @@ export const getUsers = (req, res) => {
     função responsável por salvar a foto de perfil de um usuário
     em um diretório no sistema operacional
 */
-function savePhotoUser(codeBase64, pictureName){
+function savePhotoUser(codeBase64, pictureName, req){
     let buffer = new Buffer(codeBase64, 'base64')
     let pictureExtension = fileType(buffer).ext
     pictureName = pictureName + '.' + pictureExtension
     fs.writeFileSync(BASE_URL_SAVE + pictureName, buffer)
-    return BASE_URL_USER_PICTURE + pictureName
+    return getAbsoluteUri(req) + BASE_URL_USER_PICTURE + pictureName
 }
 
 const BASE_URL_USER_PICTURE = '/static/images/'

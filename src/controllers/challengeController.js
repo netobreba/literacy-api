@@ -6,9 +6,10 @@ import {User} from '../models/user'
 const fs = require('fs')
 const fileType = require('file-type')
 const crypto = require('crypto');
+import {getAbsoluteUri} from '../server.js'
 
 export const addChallenge = (req, res) => {
-    const image = saveImageChallenge(req.body.image)
+    const image = saveImageChallenge(req.body.image, req)
     const word = req.body.word
     const sound = req.body.sound
     const video = req.body.video
@@ -27,7 +28,7 @@ export const addChallenge = (req, res) => {
 }
 
 export const updateChallege = (req, res) => {
-    const image = saveImageChallenge(req.body.image)
+    const image = saveImageChallenge(req.body.image, req)
     const word = req.body.word
     const sound = req.body.sound
     const video = req.body.video
@@ -99,14 +100,14 @@ const RULE_PRESENT_CHALLENGE = {
 const CHALLENGE_NOT_FOUND = "challenge não existe"
 const ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt']
 
-function saveImageChallenge(codeBase64){
+function saveImageChallenge(codeBase64, req){
     if(!codeBase64) return null;
     let buffer = new Buffer(codeBase64, 'base64')
     let imageExtension = fileType(buffer).ext
     let imageName = generateChallengeName()
     imageName = imageName + '.' + imageExtension
     fs.writeFileSync(BASE_URL_CONTEXT + imageName, buffer)
-    return BASE_URL_CONTEXT_IMAGE + imageName
+    return getAbsoluteUri(req) + BASE_URL_CONTEXT_IMAGE + imageName
 }
 
 function generateChallengeName(){

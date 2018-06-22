@@ -17,14 +17,15 @@ var _context = require('../models/context');
 
 var _user = require('../models/user');
 
+var _server = require('../server.js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var fs = require('fs');
 var fileType = require('file-type');
 var crypto = require('crypto');
-
 var addContext = exports.addContext = function addContext(req, res) {
-    var image = saveImageContext(req.body.image);
+    var image = saveImageContext(req.body.image, req);
     var name = req.body.name;
     var sound = req.body.sound;
     var video = req.body.video;
@@ -46,7 +47,7 @@ var updateContext = exports.updateContext = function updateContext(req, res) {
     var id = req.params.id;
     _context.Context.findById(id).then(function (context) {
         if (context) {
-            var image = saveImageContext(req.body.image);
+            var image = saveImageContext(req.body.image, req);
             var name = req.body.name;
             var sound = req.body.sound;
             var video = req.body.video;
@@ -109,14 +110,14 @@ function responseNotFoundContext() {
 var CONTEXT_NOT_FOUND = "contexto not found";
 var ATTRIBUTES_EXCLUDE_USER = ['password', 'createdAt', 'updatedAt'];
 
-function saveImageContext(codeBase64) {
+function saveImageContext(codeBase64, req) {
     if (!codeBase64) return null;
     var buffer = new Buffer(codeBase64, 'base64');
     var imageExtension = fileType(buffer).ext;
     var imageName = generateContextName();
     imageName = imageName + '.' + imageExtension;
     fs.writeFileSync(BASE_URL_CONTEXT + imageName, buffer);
-    return BASE_URL_CONTEXT_IMAGE + imageName;
+    return (0, _server.getAbsoluteUri)(req) + BASE_URL_CONTEXT_IMAGE + imageName;
 }
 
 function generateContextName() {
