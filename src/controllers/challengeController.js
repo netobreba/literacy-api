@@ -78,7 +78,7 @@ export const getChallenge = (req, res) => {
 
 export const getChallengeByContext = (req, res) => {
     const id = req.params.id
-    Challenge.find({where: {contextId: id}}).then(result => {
+    Challenge.findAll({where: {contextId: id}}).then(result => {
         if(result){
             res.status(HttpStatus.OK).json(result).send()
         }else{
