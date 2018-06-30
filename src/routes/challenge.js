@@ -13,5 +13,8 @@ router.route('/:id/')
     .put(controller.updateChallege)
     .get(controller.getChallenge)
     .delete(controller.deleteChallenge)
+
+router.route('/:id/context/')
+    .get(controller.getChallengeByContext)
     
 export default router
